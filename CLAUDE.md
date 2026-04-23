@@ -39,7 +39,10 @@ pnpm typecheck    # tsc --noEmit
 | `src/hooks/**`, `src/stores/**` | `state-management` |
 | `**/*.test.*`, `**/*.spec.*` | `testing-strategy` |
 | `**/*.css`, `tailwind.config.*` | `css-architecture` |
-| `src/app/**`, `src/pages/**` | `performance-optimization` |
+| `src/app/**`, `src/pages/**` | `performance-optimization`, `seo-fundamentals` |
+| Page metadata, `<head>` | `seo-fundamentals`, `structured-data` |
+| Schema markup, JSON-LD | `structured-data` |
+| Lighthouse / speed issues | `core-web-vitals` |
 | Any UI component | `accessibility` |
 | Bug investigation | `systematic-debugging` |
 | Security concern | `security-audit` |

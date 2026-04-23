@@ -29,7 +29,7 @@ claude-workspace/
 ├── install.sh                                 # One-command installer
 ├── .claude/
 │   ├── settings.json                          # Permissions, 10 hooks, env
-│   ├── agents/ (8)                            # Specialized sub-agents
+│   ├── agents/ (8)
 │   │   ├── code-reviewer.md                   # Auto-invoked after code changes
 │   │   ├── performance-auditor.md             # Core Web Vitals & bundles
 │   │   ├── accessibility-auditor.md           # WCAG 2.1 AA compliance
@@ -38,7 +38,7 @@ claude-workspace/
 │   │   ├── architecture-reviewer.md           # Module boundaries (background)
 │   │   ├── test-writer.md                     # Writes tests (background)
 │   │   └── orchestrator.md                    # Unified health report (Opus)
-│   ├── commands/ (9)                          # Slash commands
+│   ├── commands/ (11)
 │   │   ├── code-quality.md                    # /code-quality <path>
 │   │   ├── component-gen.md                   # /component-gen <Name>
 │   │   ├── pr-review.md                       # /pr-review
@@ -47,30 +47,35 @@ claude-workspace/
 │   │   ├── onboard.md                         # /onboard
 │   │   ├── tdd.md                             # /tdd <feature>
 │   │   ├── build-fix.md                       # /build-fix
-│   │   └── e2e.md                             # /e2e <user-flow>
-│   ├── rules/ (4)                             # Path-scoped, lazy-loaded
+│   │   ├── e2e.md                             # /e2e <user-flow>
+│   │   ├── lighthouse.md                      # /lighthouse [url]
+│   │   └── perf-audit.md                      # /perf-audit [focus]
+│   ├── rules/ (4)
 │   │   ├── typescript.md                      # *.ts, *.tsx
 │   │   ├── styling.md                         # *.css, tailwind.config.*
 │   │   ├── testing.md                         # *.test.*, *.spec.*
 │   │   └── documentation.md                   # *.md, *.mdx
-│   ├── skills/ (10)                           # Deep knowledge bases
+│   ├── skills/ (13)
 │   │   ├── react-patterns/SKILL.md            # Component architecture
 │   │   ├── state-management/SKILL.md          # TanStack Query, Zustand, URL state
 │   │   ├── testing-strategy/SKILL.md          # TDD, factories, mocking
 │   │   ├── css-architecture/SKILL.md          # Tailwind, tokens, responsive
-│   │   ├── performance-optimization/SKILL.md  # Web Vitals, splitting, virtualization
+│   │   ├── performance-optimization/SKILL.md  # Bundles, splitting, virtualization
 │   │   ├── accessibility/SKILL.md             # WCAG, ARIA, keyboard, focus
 │   │   ├── systematic-debugging/SKILL.md      # 4-phase root cause analysis
 │   │   ├── frontend-design/SKILL.md           # Aesthetics, typography, interactions
 │   │   ├── design-intelligence/SKILL.md       # Claude Design + Google Stitch
-│   │   └── security-audit/SKILL.md            # XSS, CSP, secrets, auth, deps
+│   │   ├── security-audit/SKILL.md            # XSS, CSP, secrets, auth, deps
+│   │   ├── seo-fundamentals/SKILL.md          # Meta tags, OG, SSR, crawlability
+│   │   ├── structured-data/SKILL.md           # JSON-LD schemas, GEO/AEO
+│   │   └── core-web-vitals/SKILL.md           # LCP, INP, CLS fix recipes
 │   └── hooks/scripts/
 │       └── screenshot.sh                      # UI screenshot capture
 ├── .mcp.json                                  # MCP server config
 └── .gitignore
 ```
 
-## Skills (10)
+## Skills (13)
 
 | Skill | What It Covers |
 |-------|----------------|
@@ -78,12 +83,15 @@ claude-workspace/
 | `state-management` | TanStack Query, Zustand, URL state, decision framework |
 | `testing-strategy` | TDD, factory pattern, mocking, coverage targets |
 | `css-architecture` | Tailwind patterns, design tokens, responsive, z-index |
-| `performance-optimization` | Core Web Vitals, code splitting, virtualization |
+| `performance-optimization` | Bundle splitting, lazy loading, virtualization |
 | `accessibility` | WCAG 2.1 AA, ARIA, keyboard nav, focus management |
-| `systematic-debugging` | 4-phase root cause analysis, no fix without diagnosis |
+| `systematic-debugging` | 4-phase root cause analysis |
 | `frontend-design` | Bold aesthetics, typography, micro-interactions |
 | `design-intelligence` | Claude Design + Google Stitch workflows |
 | `security-audit` | XSS, CSP, secrets, auth patterns, dependency vulns |
+| `seo-fundamentals` | Meta tags, OG/Twitter cards, SSR vs CSR, crawlability |
+| `structured-data` | JSON-LD schemas (Product, Article, FAQ, Breadcrumb), GEO/AEO |
+| `core-web-vitals` | LCP, INP, CLS — diagnosis + specific React/Next.js fix recipes |
 
 ## Agents (8)
 
@@ -98,7 +106,7 @@ claude-workspace/
 | `test-writer` | Sonnet | After features or bug fixes (background) |
 | `orchestrator` | Opus | Full project health check on demand |
 
-## Commands (9)
+## Commands (11)
 
 | Command | What it does |
 |---------|-------|
@@ -111,6 +119,8 @@ claude-workspace/
 | `/tdd <feature>` | Red-green-refactor TDD cycle |
 | `/build-fix` | Auto-diagnose and fix build errors |
 | `/e2e <flow>` | Generate Playwright E2E tests |
+| `/lighthouse [url]` | Run Lighthouse audit, parse scores, generate fix list |
+| `/perf-audit [focus]` | Bundle analysis, dep weight, images, fonts, third-party |
 
 ## Hooks (10)
 
