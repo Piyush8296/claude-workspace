@@ -2,6 +2,12 @@
 
 A production-grade Claude Code workspace configuration built by senior frontend engineers, for frontend engineers. Drop this into any React/TypeScript project and immediately get expert-level AI pair programming with enforced standards, automated quality gates, and domain-specific knowledge.
 
+## Architecture
+
+<p align="center">
+  <img src="assets/architecture.svg" alt="Claude Workspace Architecture — showing CLAUDE.md, settings.json, agents, commands, rules, skills, and hooks" width="720" />
+</p>
+
 ## What's Inside
 
 ```

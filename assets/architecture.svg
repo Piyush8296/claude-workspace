@@ -1,0 +1,105 @@
+<svg viewBox="0 0 720 520" xmlns="http://www.w3.org/2000/svg" role="img">
+  <title>Claude Workspace Architecture</title>
+  <desc>Repository structure showing CLAUDE.md, settings, agents, commands, rules, and skills</desc>
+  <style>
+    text { font-family: system-ui, -apple-system, sans-serif; }
+    .title { font-size: 16px; font-weight: 700; fill: #1a1a1a; }
+    .subtitle { font-size: 11px; fill: #666; }
+    .label { font-size: 11px; font-weight: 600; fill: white; }
+    .item { font-size: 10px; fill: #1a1a1a; }
+    .count { font-size: 9px; fill: #888; }
+    .connector { stroke: #ddd; stroke-width: 1.5; fill: none; }
+    @media (prefers-color-scheme: dark) {
+      .title { fill: #f0f0f0; }
+      .subtitle { fill: #aaa; }
+      .item { fill: #e0e0e0; }
+      .count { fill: #999; }
+      .connector { stroke: #444; }
+      .bg-box { fill: #1e1e1e; stroke: #333; }
+    }
+  </style>
+
+  <!-- Title -->
+  <text x="360" y="28" text-anchor="middle" class="title">claude-workspace / Frontend Engineering</text>
+  <text x="360" y="44" text-anchor="middle" class="subtitle">Production-grade Claude Code config — skills, agents, hooks, rules, commands</text>
+
+  <!-- CLAUDE.md (center top) -->
+  <rect x="270" y="60" width="180" height="36" rx="8" fill="#2563eb"/>
+  <text x="360" y="82" text-anchor="middle" class="label">CLAUDE.md</text>
+  <text x="360" y="110" text-anchor="middle" class="count">Project memory — stack, rules, skill map</text>
+
+  <!-- settings.json -->
+  <rect x="30" y="130" width="140" height="32" rx="6" fill="#7c3aed"/>
+  <text x="100" y="150" text-anchor="middle" class="label">settings.json</text>
+  <text x="100" y="174" text-anchor="middle" class="count">Permissions + 5 hooks</text>
+
+  <!-- .mcp.json -->
+  <rect x="550" y="130" width="140" height="32" rx="6" fill="#7c3aed"/>
+  <text x="620" y="150" text-anchor="middle" class="label">.mcp.json</text>
+  <text x="620" y="174" text-anchor="middle" class="count">GitHub + Filesystem MCPs</text>
+
+  <!-- Connectors from CLAUDE.md -->
+  <line x1="310" y1="96" x2="170" y2="130" class="connector"/>
+  <line x1="410" y1="96" x2="550" y2="130" class="connector"/>
+
+  <!-- Agents Box -->
+  <rect x="20" y="200" width="160" height="155" rx="8" fill="#f8f9fa" stroke="#e0e0e0" class="bg-box"/>
+  <rect x="20" y="200" width="160" height="28" rx="8" fill="#059669"/>
+  <rect x="20" y="216" width="160" height="12" fill="#059669"/>
+  <text x="100" y="219" text-anchor="middle" class="label">Agents (4)</text>
+  <text x="32" y="248" class="item">code-reviewer</text>
+  <text x="32" y="268" class="item">performance-auditor</text>
+  <text x="32" y="288" class="item">accessibility-auditor</text>
+  <text x="32" y="308" class="item">refactor-planner</text>
+  <text x="32" y="340" class="count">Auto-invoked specialists</text>
+
+  <!-- Commands Box -->
+  <rect x="200" y="200" width="160" height="155" rx="8" fill="#f8f9fa" stroke="#e0e0e0" class="bg-box"/>
+  <rect x="200" y="200" width="160" height="28" rx="8" fill="#d97706"/>
+  <rect x="200" y="216" width="160" height="12" fill="#d97706"/>
+  <text x="280" y="219" text-anchor="middle" class="label">Commands (6)</text>
+  <text x="212" y="248" class="item">/code-quality</text>
+  <text x="212" y="268" class="item">/component-gen</text>
+  <text x="212" y="288" class="item">/pr-review</text>
+  <text x="212" y="308" class="item">/ticket  /migrate</text>
+  <text x="212" y="328" class="item">/onboard</text>
+  <text x="212" y="348" class="count">Slash command workflows</text>
+
+  <!-- Rules Box -->
+  <rect x="380" y="200" width="150" height="155" rx="8" fill="#f8f9fa" stroke="#e0e0e0" class="bg-box"/>
+  <rect x="380" y="200" width="150" height="28" rx="8" fill="#dc2626"/>
+  <rect x="380" y="216" width="150" height="12" fill="#dc2626"/>
+  <text x="455" y="219" text-anchor="middle" class="label">Rules (4)</text>
+  <text x="392" y="248" class="item">typescript.md</text>
+  <text x="392" y="268" class="item">styling.md</text>
+  <text x="392" y="288" class="item">testing.md</text>
+  <text x="392" y="308" class="item">documentation.md</text>
+  <text x="392" y="340" class="count">Path-scoped, lazy-loaded</text>
+
+  <!-- Skills Box -->
+  <rect x="550" y="200" width="150" height="155" rx="8" fill="#f8f9fa" stroke="#e0e0e0" class="bg-box"/>
+  <rect x="550" y="200" width="150" height="28" rx="8" fill="#2563eb"/>
+  <rect x="550" y="216" width="150" height="12" fill="#2563eb"/>
+  <text x="625" y="219" text-anchor="middle" class="label">Skills (7)</text>
+  <text x="562" y="248" class="item">react-patterns</text>
+  <text x="562" y="263" class="item">state-management</text>
+  <text x="562" y="278" class="item">testing-strategy</text>
+  <text x="562" y="293" class="item">css-architecture</text>
+  <text x="562" y="308" class="item">performance-optimization</text>
+  <text x="562" y="323" class="item">accessibility</text>
+  <text x="562" y="338" class="item">systematic-debugging</text>
+
+  <!-- Hooks section -->
+  <rect x="120" y="390" width="480" height="110" rx="8" fill="#f8f9fa" stroke="#e0e0e0" class="bg-box"/>
+  <rect x="120" y="390" width="480" height="28" rx="8" fill="#7c3aed"/>
+  <rect x="120" y="406" width="480" height="12" fill="#7c3aed"/>
+  <text x="360" y="409" text-anchor="middle" class="label">Hooks (Deterministic Quality Gates)</text>
+
+  <text x="145" y="440" class="item" font-weight="600">PreToolUse:</text>
+  <text x="240" y="440" class="item">Block edits on main branch</text>
+
+  <text x="145" y="460" class="item" font-weight="600">PostToolUse:</text>
+  <text x="240" y="460" class="item">Auto-format (Prettier) + TypeScript check</text>
+  <text x="240" y="477" class="item">Run related tests + auto-install deps on package.json change</text>
+
+</svg>
