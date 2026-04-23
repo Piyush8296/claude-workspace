@@ -179,7 +179,6 @@ This workspace is frontend-focused by default but designed for extension:
 - [Claude Code Best Practices](https://code.claude.com/docs/en/best-practices)
 - [Claude Code Showcase](https://github.com/ChrisWiles/claude-code-showcase)
 - [Awesome Claude Code](https://github.com/hesreallyhim/awesome-claude-code)
-- [LeadGenMan Resources](https://resources.leadgenman.com/)
 - [Claude Design](https://support.claude.com/en/articles/14604416-get-started-with-claude-design)
 - [Google Stitch](https://stitch.withgoogle.com/)
 
