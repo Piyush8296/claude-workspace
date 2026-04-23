@@ -8,6 +8,17 @@ Production-grade Claude Code workspace for frontend teams. Drop into any React/T
   <img src="assets/architecture.svg" alt="Claude Workspace Architecture" width="720" />
 </p>
 
+## Why Claude Workspace?
+
+Most developers copy-paste prompts. This repo gives you a **version-controlled, team-shareable Claude Code configuration** with:
+- 🎯 13 domain-specific skills (React, TypeScript, a11y, SEO, Core Web Vitals)
+- 🤖 8 autonomous agents with auto-invocation rules
+- ⚡ 11 slash commands for full ticket-to-PR workflows
+- 🔒 10 hooks for deterministic quality gates
+- 📦 One-command install into any project
+
+> Works with [Claude Code](https://claude.ai/code) — Anthropic's agentic CLI.
+
 ## Quick Install
 
 ```bash
