@@ -14,12 +14,15 @@ A production-grade Claude Code workspace configuration built by senior frontend 
 claude-workspace/
 ├── CLAUDE.md                                # Project memory — stack, conventions, critical rules
 ├── .claude/
-│   ├── settings.json                        # Permissions, hooks, env config
+│   ├── settings.json                        # Permissions, 10 hooks, env config
 │   ├── agents/
 │   │   ├── code-reviewer.md                 # Senior code reviewer (auto-invoked)
 │   │   ├── performance-auditor.md           # Core Web Vitals & bundle analysis
 │   │   ├── accessibility-auditor.md         # WCAG 2.1 AA compliance
-│   │   └── refactor-planner.md              # Safe refactoring strategy
+│   │   ├── refactor-planner.md              # Safe refactoring strategy
+│   │   ├── doc-generator.md                 # Auto-writes JSDoc & component docs
+│   │   ├── architecture-reviewer.md         # Module boundaries & scalability
+│   │   └── test-writer.md                   # Writes tests with factory patterns
 │   ├── commands/
 │   │   ├── code-quality.md                  # /code-quality <path>
 │   │   ├── component-gen.md                 # /component-gen <ComponentName>
@@ -32,14 +35,19 @@ claude-workspace/
 │   │   ├── styling.md                       # CSS/Tailwind rules (lazy-loaded)
 │   │   ├── testing.md                       # Test file rules (lazy-loaded)
 │   │   └── documentation.md                 # Markdown rules (lazy-loaded)
-│   └── skills/
-│       ├── react-patterns/SKILL.md          # Component architecture & patterns
-│       ├── state-management/SKILL.md        # State strategies & data fetching
-│       ├── testing-strategy/SKILL.md        # Testing methodology & factories
-│       ├── css-architecture/SKILL.md        # Styling patterns & responsive design
-│       ├── performance-optimization/SKILL.md # Web Vitals, lazy loading, memoization
-│       ├── accessibility/SKILL.md           # WCAG, ARIA, keyboard nav
-│       └── systematic-debugging/SKILL.md    # Root cause analysis methodology
+│   ├── skills/
+│   │   ├── react-patterns/SKILL.md          # Component architecture & patterns
+│   │   ├── state-management/SKILL.md        # State strategies & data fetching
+│   │   ├── testing-strategy/SKILL.md        # Testing methodology & factories
+│   │   ├── css-architecture/SKILL.md        # Styling patterns & responsive design
+│   │   ├── performance-optimization/SKILL.md # Web Vitals, lazy loading, memoization
+│   │   ├── accessibility/SKILL.md           # WCAG, ARIA, keyboard nav
+│   │   ├── systematic-debugging/SKILL.md    # Root cause analysis methodology
+│   │   ├── frontend-design/SKILL.md         # Bold aesthetics, typography, micro-interactions
+│   │   └── design-intelligence/SKILL.md     # Claude Design + Google Stitch workflows
+│   └── hooks/
+│       └── scripts/
+│           └── screenshot.sh                # UI screenshot capture for visual review
 ├── .mcp.json                                # MCP server configuration
 └── .gitignore
 ```
@@ -73,41 +81,81 @@ Claude will automatically load the configuration and have access to all skills, 
 
 ## How It Works
 
-### Skills (`.claude/skills/`)
+### Skills (9 skills in `.claude/skills/`)
 
 Skills are deep knowledge bases that Claude loads when relevant. Each contains patterns, anti-patterns, code examples, and checklists. Claude auto-discovers them based on task context.
 
-**Example**: When you ask Claude to build a form component, it automatically loads both `react-patterns` and `state-management` skills.
+| Skill | What It Covers |
+|-------|----------------|
+| `react-patterns` | Component architecture, composition, state handling order |
+| `state-management` | TanStack Query, Zustand, URL state, decision framework |
+| `testing-strategy` | TDD, factory pattern, mocking, coverage targets |
+| `css-architecture` | Tailwind patterns, design tokens, responsive, z-index |
+| `performance-optimization` | Core Web Vitals, code splitting, virtualization |
+| `accessibility` | WCAG 2.1 AA, ARIA, keyboard nav, focus management |
+| `systematic-debugging` | 4-phase root cause analysis, no fix without diagnosis |
+| `frontend-design` | Bold aesthetics, typography, micro-interactions, skeleton loading |
+| `design-intelligence` | Claude Design + Google Stitch workflows, design tokens, style selection |
 
-### Agents (`.claude/agents/`)
+### Agents (7 agents in `.claude/agents/`)
 
-Specialized sub-agents that run in isolated contexts with focused toolsets. Claude delegates to them for domain-specific analysis.
+Specialized sub-agents that run in isolated contexts with focused toolsets.
 
-**Example**: After writing code, the `code-reviewer` agent proactively reviews your changes against project standards.
+| Agent | Model | Trigger |
+|-------|-------|---------|
+| `code-reviewer` | Sonnet | Proactively after any code change |
+| `performance-auditor` | Sonnet | Performance complaints or pre-launch |
+| `accessibility-auditor` | Sonnet | UI work or a11y issues reported |
+| `refactor-planner` | Sonnet | Before restructuring or migration |
+| `doc-generator` | Haiku | Proactively after code changes (background) |
+| `architecture-reviewer` | Sonnet | Adding modules or restructuring (background) |
+| `test-writer` | Sonnet | After features or bug fixes (background) |
 
-### Commands (`.claude/commands/`)
-
-Slash commands for repeatable workflows. Type `/command-name` in Claude Code to trigger them.
+### Commands (6 slash commands in `.claude/commands/`)
 
 | Command | Usage | What it does |
 |---------|-------|--------------|
 | `/code-quality` | `/code-quality src/components/` | Runs lint, typecheck, and manual review |
-| `/component-gen` | `/component-gen UserAvatar` | Scaffolds component + test + story |
+| `/component-gen` | `/component-gen UserAvatar` | Scaffolds component + test + barrel export |
 | `/pr-review` | `/pr-review` | Reviews current branch changes |
 | `/ticket` | `/ticket PROJ-123` | Full ticket-to-PR workflow |
 | `/migrate` | `/migrate class-components hooks` | Guided migration with safety checks |
 | `/onboard` | `/onboard` | Explores and documents the codebase |
 
-### Rules (`.claude/rules/`)
+### Rules (4 path-scoped rules in `.claude/rules/`)
 
-Path-scoped rules that lazy-load only when Claude touches matching files. Zero overhead when not relevant.
+Lazy-load only when Claude touches matching files. Zero overhead when not relevant.
 
-### Hooks (in `settings.json`)
+| Rule | Triggers On |
+|------|-------------|
+| `typescript.md` | `**/*.ts`, `**/*.tsx` |
+| `styling.md` | `**/*.css`, `**/*.scss`, `tailwind.config.*` |
+| `testing.md` | `**/*.test.*`, `**/*.spec.*` |
+| `documentation.md` | `**/*.md`, `**/*.mdx` |
+
+### Hooks (10 hooks in `settings.json`)
 
 Deterministic shell commands that run at specific lifecycle points:
 
-- **PreToolUse**: Blocks edits on `main` branch
-- **PostToolUse**: Auto-formats with Prettier, runs TypeScript checks, executes related tests, installs deps on `package.json` changes
+| Hook | Event | What It Does |
+|------|-------|--------------|
+| Branch guard | PreToolUse | Blocks edits on `main` branch |
+| File protection | PreToolUse | Blocks edits to `.env`, production configs, secrets |
+| Prettier format | PostToolUse | Auto-formats JS/TS/JSX/TSX on save |
+| TypeScript check | PostToolUse | Runs `tsc --noEmit` on TS file changes |
+| Test runner | PostToolUse | Runs related tests on test file changes |
+| Dep installer | PostToolUse | Auto-installs on `package.json` changes |
+| Auto-commit | PostToolUse | Stages + commits every successful edit |
+| UI screenshot | PostToolUse | Captures running app on UI file changes |
+| Finish notification | Stop | macOS notification when Claude finishes |
+| Vercel preview | Stop | Deploys preview after clean build |
+
+## External Design Tools
+
+The `design-intelligence` skill integrates with two AI design platforms:
+
+- **[Claude Design](https://support.claude.com/en/articles/14604416-get-started-with-claude-design)** — Anthropic's visual prototyping tool. Creates designs from conversation, enforces your design system, exports to React.
+- **[Google Stitch](https://stitch.withgoogle.com/)** — Free AI UI design tool. Generates up to 5 interconnected screens from natural language, exports to Tailwind, Vue, Angular, Flutter, SwiftUI.
 
 ## Extending for Backend / Full-Stack
 
@@ -131,6 +179,9 @@ This workspace is frontend-focused by default but designed for extension:
 - [Claude Code Best Practices](https://code.claude.com/docs/en/best-practices)
 - [Claude Code Showcase](https://github.com/ChrisWiles/claude-code-showcase)
 - [Awesome Claude Code](https://github.com/hesreallyhim/awesome-claude-code)
+- [LeadGenMan Resources](https://resources.leadgenman.com/)
+- [Claude Design](https://support.claude.com/en/articles/14604416-get-started-with-claude-design)
+- [Google Stitch](https://stitch.withgoogle.com/)
 
 ## License
 
