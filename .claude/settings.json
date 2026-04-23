@@ -24,6 +24,8 @@
       "Bash(git branch*)",
       "Bash(git show*)",
       "Bash(git stash*)",
+      "Bash(git add*)",
+      "Bash(git commit*)",
       "Bash(cat:*)",
       "Bash(ls:*)",
       "Bash(find:*)",
@@ -37,6 +39,9 @@
       "Bash(eslint:*)",
       "Bash(prettier:*)",
       "Bash(vitest:*)",
+      "Bash(vercel:*)",
+      "Bash(screencapture:*)",
+      "Bash(osascript:*)",
       "WebFetch(domain:raw.githubusercontent.com)",
       "WebFetch(domain:registry.npmjs.org)",
       "WebFetch(domain:docs.anthropic.com)",
@@ -66,7 +71,7 @@
   "hooks": {
     "PreToolUse": [
       {
-        "matcher": "Edit|Write",
+        "matcher": "Edit|Write|MultiEdit",
         "hooks": [
           {
             "type": "command",
@@ -74,21 +79,31 @@
             "timeout": 5
           }
         ]
+      },
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "FILE_PATH=$(echo \"$CLAUDE_TOOL_INPUT\" | jq -r '.file_path // .filepath // empty' 2>/dev/null)\nif [ -n \"$FILE_PATH\" ]; then\n  echo \"$FILE_PATH\" | grep -qE '\\.env|\\.env\\.|production\\.config|secrets\\.' && {\n    echo '{\"block\": true, \"message\": \"BLOCKED: Protected file. Do not edit .env, production configs, or secret files directly.\"}' >&2\n    exit 2\n  }\nfi\nexit 0",
+            "timeout": 5
+          }
+        ]
       }
     ],
     "PostToolUse": [
       {
-        "matcher": "Edit|Write",
+        "matcher": "Edit|Write|MultiEdit",
         "hooks": [
           {
             "type": "command",
-            "command": "if [[ \"$CLAUDE_TOOL_INPUT_FILE_PATH\" =~ \\.(ts|tsx|js|jsx)$ ]]; then\n  npx prettier --write \"$CLAUDE_TOOL_INPUT_FILE_PATH\" 2>/dev/null\n  if [ $? -eq 0 ]; then\n    echo '{\"feedback\": \"Formatted with Prettier.\", \"suppressOutput\": true}'\n  else\n    echo '{\"feedback\": \"Prettier formatting failed — check syntax.\"}' >&2\n  fi\nfi",
+            "command": "if [[ \"$CLAUDE_TOOL_INPUT_FILE_PATH\" =~ \\.(ts|tsx|js|jsx)$ ]]; then\n  npx prettier --write \"$CLAUDE_TOOL_INPUT_FILE_PATH\" 2>/dev/null\n  if [ $? -eq 0 ]; then\n    echo '{\"feedback\": \"Formatted with Prettier.\", \"suppressOutput\": true}'\n  else\n    echo '{\"feedback\": \"Prettier formatting failed \u2014 check syntax.\"}' >&2\n  fi\nfi",
             "timeout": 15
           }
         ]
       },
       {
-        "matcher": "Edit|Write",
+        "matcher": "Edit|Write|MultiEdit",
         "hooks": [
           {
             "type": "command",
@@ -98,22 +113,65 @@
         ]
       },
       {
-        "matcher": "Edit|Write",
+        "matcher": "Edit|Write|MultiEdit",
         "hooks": [
           {
             "type": "command",
-            "command": "if [[ \"$CLAUDE_TOOL_INPUT_FILE_PATH\" =~ \\.test\\.(ts|tsx|js|jsx)$ ]]; then\n  echo '{\"feedback\": \"Running related tests...\"}' >&2\n  npx vitest run \"$CLAUDE_TOOL_INPUT_FILE_PATH\" --reporter=verbose 2>&1 | tail -25\n  if [ ${PIPESTATUS[0]} -eq 0 ]; then\n    echo '{\"feedback\": \"Tests passed.\"}'\n  else\n    echo '{\"feedback\": \"Tests failed — see output above.\"}' >&2\n  fi\nfi",
+            "command": "if [[ \"$CLAUDE_TOOL_INPUT_FILE_PATH\" =~ \\.test\\.(ts|tsx|js|jsx)$ ]]; then\n  echo '{\"feedback\": \"Running related tests...\"}' >&2\n  npx vitest run \"$CLAUDE_TOOL_INPUT_FILE_PATH\" --reporter=verbose 2>&1 | tail -25\n  if [ ${PIPESTATUS[0]} -eq 0 ]; then\n    echo '{\"feedback\": \"Tests passed.\"}'\n  else\n    echo '{\"feedback\": \"Tests failed \u2014 see output above.\"}' >&2\n  fi\nfi",
             "timeout": 60
           }
         ]
       },
       {
-        "matcher": "Edit|Write",
+        "matcher": "Edit|Write|MultiEdit",
         "hooks": [
           {
             "type": "command",
             "command": "if [[ \"$CLAUDE_TOOL_INPUT_FILE_PATH\" =~ package\\.json$ ]]; then\n  echo '{\"feedback\": \"Installing dependencies...\"}' >&2\n  pnpm install --frozen-lockfile 2>/dev/null || npm install 2>/dev/null\n  if [ $? -eq 0 ]; then\n    echo '{\"feedback\": \"Dependencies installed.\", \"suppressOutput\": true}'\n  else\n    echo '{\"feedback\": \"Dependency install failed.\"}' >&2\n  fi\nfi",
             "timeout": 60
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "git add -A && git diff --cached --quiet || git commit -m \"claude: auto-save $(date +%H:%M:%S)\" --no-verify 2>/dev/null\necho '{\"feedback\": \"Auto-committed changes.\", \"suppressOutput\": true}'",
+            "timeout": 10
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [[ \"$CLAUDE_TOOL_INPUT_FILE_PATH\" =~ (components|pages|app)/.*\\.(tsx|jsx|css)$ ]]; then\n  if command -v screencapture &>/dev/null; then\n    mkdir -p \"${CLAUDE_PROJECT_DIR:-.}/.claude/screenshots\"\n    screencapture -x -T 1 \"${CLAUDE_PROJECT_DIR:-.}/.claude/screenshots/ui-$(date +%s).png\" 2>/dev/null\n    echo '{\"feedback\": \"UI screenshot captured.\", \"suppressOutput\": true}'\n  fi\nfi",
+            "timeout": 10,
+            "async": true
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if command -v osascript &>/dev/null; then\n  osascript -e 'display notification \"Claude finished the task\" with title \"Claude Code\" sound name \"Glass\"' 2>/dev/null\nfi",
+            "timeout": 5,
+            "async": true
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if command -v npm &>/dev/null && [ -f package.json ]; then\n  BUILD_OUTPUT=$(npm run build 2>&1)\n  if [ $? -eq 0 ] && command -v vercel &>/dev/null; then\n    PREVIEW_URL=$(vercel --prod=false --yes 2>/dev/null | tail -1)\n    if [ -n \"$PREVIEW_URL\" ]; then\n      echo \"{\\\"feedback\\\": \\\"Vercel preview deployed: $PREVIEW_URL\\\"}\"\n      command -v open &>/dev/null && open \"$PREVIEW_URL\"\n    fi\n  fi\nfi",
+            "timeout": 120,
+            "async": true
           }
         ]
       }
