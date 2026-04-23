@@ -1,0 +1,126 @@
+{
+  "includeCoAuthoredBy": true,
+  "respectGitignore": true,
+  "env": {
+    "INSIDE_CLAUDE_CODE": "1",
+    "BASH_DEFAULT_TIMEOUT_MS": "300000",
+    "BASH_MAX_TIMEOUT_MS": "600000",
+    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "75"
+  },
+  "permissions": {
+    "allow": [
+      "Read(*)",
+      "Edit(*)",
+      "Write(*)",
+      "Glob(*)",
+      "Grep(*)",
+      "Bash(pnpm:*)",
+      "Bash(npm:*)",
+      "Bash(npx:*)",
+      "Bash(node:*)",
+      "Bash(git log*)",
+      "Bash(git diff*)",
+      "Bash(git status*)",
+      "Bash(git branch*)",
+      "Bash(git show*)",
+      "Bash(git stash*)",
+      "Bash(cat:*)",
+      "Bash(ls:*)",
+      "Bash(find:*)",
+      "Bash(head:*)",
+      "Bash(tail:*)",
+      "Bash(wc:*)",
+      "Bash(sort:*)",
+      "Bash(grep:*)",
+      "Bash(echo:*)",
+      "Bash(tsc:*)",
+      "Bash(eslint:*)",
+      "Bash(prettier:*)",
+      "Bash(vitest:*)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:registry.npmjs.org)",
+      "WebFetch(domain:docs.anthropic.com)",
+      "WebFetch(domain:react.dev)",
+      "WebFetch(domain:nextjs.org)",
+      "WebFetch(domain:developer.mozilla.org)",
+      "WebSearch"
+    ],
+    "deny": [],
+    "ask": [
+      "Bash(rm *)",
+      "Bash(rmdir *)",
+      "Bash(chmod *)",
+      "Bash(chown *)",
+      "Bash(docker *)",
+      "Bash(kubectl *)",
+      "Bash(git push*)",
+      "Bash(git checkout main)",
+      "Bash(git merge*)",
+      "Bash(git reset --hard*)",
+      "Bash(git rebase*)",
+      "Bash(kill *)",
+      "Bash(killall *)",
+      "Bash(pkill *)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "[ \"$(git branch --show-current 2>/dev/null)\" != \"main\" ] || { echo '{\"block\": true, \"message\": \"Cannot edit files on main branch. Create a feature branch first: git checkout -b feat/<description>\"}' >&2; exit 2; }",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [[ \"$CLAUDE_TOOL_INPUT_FILE_PATH\" =~ \\.(ts|tsx|js|jsx)$ ]]; then\n  npx prettier --write \"$CLAUDE_TOOL_INPUT_FILE_PATH\" 2>/dev/null\n  if [ $? -eq 0 ]; then\n    echo '{\"feedback\": \"Formatted with Prettier.\", \"suppressOutput\": true}'\n  else\n    echo '{\"feedback\": \"Prettier formatting failed — check syntax.\"}' >&2\n  fi\nfi",
+            "timeout": 15
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [[ \"$CLAUDE_TOOL_INPUT_FILE_PATH\" =~ \\.(ts|tsx)$ ]]; then\n  output=$(npx tsc --noEmit 2>&1)\n  exit_code=$?\n  if [ $exit_code -eq 0 ]; then\n    echo '{\"feedback\": \"TypeScript: no errors.\", \"suppressOutput\": true}'\n  else\n    errors=$(echo \"$output\" | grep -A 2 \"error TS\" | head -20)\n    echo \"{\\\"feedback\\\": \\\"TypeScript errors found:\\\n$errors\\\"}\" >&2\n  fi\n  exit 0\nfi",
+            "timeout": 30
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [[ \"$CLAUDE_TOOL_INPUT_FILE_PATH\" =~ \\.test\\.(ts|tsx|js|jsx)$ ]]; then\n  echo '{\"feedback\": \"Running related tests...\"}' >&2\n  npx vitest run \"$CLAUDE_TOOL_INPUT_FILE_PATH\" --reporter=verbose 2>&1 | tail -25\n  if [ ${PIPESTATUS[0]} -eq 0 ]; then\n    echo '{\"feedback\": \"Tests passed.\"}'\n  else\n    echo '{\"feedback\": \"Tests failed — see output above.\"}' >&2\n  fi\nfi",
+            "timeout": 60
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [[ \"$CLAUDE_TOOL_INPUT_FILE_PATH\" =~ package\\.json$ ]]; then\n  echo '{\"feedback\": \"Installing dependencies...\"}' >&2\n  pnpm install --frozen-lockfile 2>/dev/null || npm install 2>/dev/null\n  if [ $? -eq 0 ]; then\n    echo '{\"feedback\": \"Dependencies installed.\", \"suppressOutput\": true}'\n  else\n    echo '{\"feedback\": \"Dependency install failed.\"}' >&2\n  fi\nfi",
+            "timeout": 60
+          }
+        ]
+      }
+    ]
+  },
+  "attribution": {
+    "commit": "Co-Authored-By: Claude <noreply@anthropic.com>",
+    "pr": "Generated with [Claude Code](https://claude.ai/code)"
+  }
+}

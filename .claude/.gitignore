@@ -1,0 +1,8 @@
+# Local personal settings (not shared with team)
+settings.local.json
+
+# Agent memory (session-specific)
+agent-memory/
+
+# Todo state
+todos.json
