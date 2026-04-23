@@ -168,6 +168,9 @@ claude-workspace/
 - **Deterministic gates** — hooks enforce formatting and checks regardless of model
 - **Composable** — skills cross-reference, agents delegate, commands orchestrate
 
+---
+<!-- Keywords: claude code configuration, anthropic claude workspace, claude system prompt, MCP tools, react typescript AI pair programming, claude agents, claude skills, frontend AI tooling, claude dotfiles -->
+
 ## License
 
 MIT
