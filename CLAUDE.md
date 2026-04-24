@@ -47,6 +47,12 @@ pnpm typecheck    # tsc --noEmit
 | Bug investigation | `systematic-debugging` |
 | Security concern | `security-audit` |
 | Design/mockup work | `design-intelligence` |
+| `src/lib/api/**`, `src/services/**` | `api-layer` |
+| Error boundaries, try/catch | `error-handling` |
+| Auth, login, middleware | `auth-patterns` |
+| Workspace, turbo.json, pnpm | `monorepo-patterns` |
+| Translations, locales | `i18n` |
+| `.env*`, config files | env-config rule |
 
 ## Agent Delegation
 

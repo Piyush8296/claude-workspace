@@ -11,10 +11,11 @@ Production-grade Claude Code workspace for frontend teams. Drop into any React/T
 ## Why Claude Workspace?
 
 Most developers copy-paste prompts. This repo gives you a **version-controlled, team-shareable Claude Code configuration** with:
-- 🎯 13 domain-specific skills (React, TypeScript, a11y, SEO, Core Web Vitals)
+- 🎯 18 domain-specific skills (React, TypeScript, a11y, SEO, Core Web Vitals, API, Auth, i18n)
 - 🤖 8 autonomous agents with auto-invocation rules
-- ⚡ 11 slash commands for full ticket-to-PR workflows
+- ⚡ 12 slash commands for full ticket-to-PR workflows
 - 🔒 10 hooks for deterministic quality gates
+- 📐 5 path-scoped rules for contextual enforcement
 - 📦 One-command install into any project
 
 > Works with [Claude Code](https://claude.ai/code) — Anthropic's agentic CLI.
@@ -36,7 +37,7 @@ Then edit `CLAUDE.md` to match your stack and run `claude`.
 
 ```
 claude-workspace/
-├── CLAUDE.md                                  # Project memory (~55 lines, lean)
+├── CLAUDE.md                                  # Project memory (~60 lines, lean)
 ├── install.sh                                 # One-command installer
 ├── .claude/
 │   ├── settings.json                          # Permissions, 10 hooks, env
@@ -49,7 +50,7 @@ claude-workspace/
 │   │   ├── architecture-reviewer.md           # Module boundaries (background)
 │   │   ├── test-writer.md                     # Writes tests (background)
 │   │   └── orchestrator.md                    # Unified health report (Opus)
-│   ├── commands/ (11)
+│   ├── commands/ (12)
 │   │   ├── code-quality.md                    # /code-quality <path>
 │   │   ├── component-gen.md                   # /component-gen <Name>
 │   │   ├── pr-review.md                       # /pr-review
@@ -60,13 +61,15 @@ claude-workspace/
 │   │   ├── build-fix.md                       # /build-fix
 │   │   ├── e2e.md                             # /e2e <user-flow>
 │   │   ├── lighthouse.md                      # /lighthouse [url]
-│   │   └── perf-audit.md                      # /perf-audit [focus]
-│   ├── rules/ (4)
+│   │   ├── perf-audit.md                      # /perf-audit [focus]
+│   │   └── deploy.md                          # /deploy (pre-deploy checklist)
+│   ├── rules/ (5)
 │   │   ├── typescript.md                      # *.ts, *.tsx
 │   │   ├── styling.md                         # *.css, tailwind.config.*
 │   │   ├── testing.md                         # *.test.*, *.spec.*
-│   │   └── documentation.md                   # *.md, *.mdx
-│   ├── skills/ (13)
+│   │   ├── documentation.md                   # *.md, *.mdx
+│   │   └── env-config.md                      # .env*, config files
+│   ├── skills/ (18)
 │   │   ├── react-patterns/SKILL.md            # Component architecture
 │   │   ├── state-management/SKILL.md          # TanStack Query, Zustand, URL state
 │   │   ├── testing-strategy/SKILL.md          # TDD, factories, mocking
@@ -79,14 +82,19 @@ claude-workspace/
 │   │   ├── security-audit/SKILL.md            # XSS, CSP, secrets, auth, deps
 │   │   ├── seo-fundamentals/SKILL.md          # Meta tags, OG, SSR, crawlability
 │   │   ├── structured-data/SKILL.md           # JSON-LD schemas, GEO/AEO
-│   │   └── core-web-vitals/SKILL.md           # LCP, INP, CLS fix recipes
+│   │   ├── core-web-vitals/SKILL.md           # LCP, INP, CLS fix recipes
+│   │   ├── api-layer/SKILL.md                 # Typed fetch, interceptors, retry
+│   │   ├── error-handling/SKILL.md            # Error boundaries, normalization
+│   │   ├── auth-patterns/SKILL.md             # NextAuth, middleware, RBAC
+│   │   ├── monorepo-patterns/SKILL.md         # Turborepo, Nx, workspaces
+│   │   └── i18n/SKILL.md                      # next-intl, react-intl, RTL, plurals
 │   └── hooks/scripts/
 │       └── screenshot.sh                      # UI screenshot capture
 ├── .mcp.json                                  # MCP server config
 └── .gitignore
 ```
 
-## Skills (13)
+## Skills (18)
 
 | Skill | What It Covers |
 |-------|----------------|
@@ -103,6 +111,11 @@ claude-workspace/
 | `seo-fundamentals` | Meta tags, OG/Twitter cards, SSR vs CSR, crawlability |
 | `structured-data` | JSON-LD schemas (Product, Article, FAQ, Breadcrumb), GEO/AEO |
 | `core-web-vitals` | LCP, INP, CLS — diagnosis + specific React/Next.js fix recipes |
+| `api-layer` | Typed fetch clients, interceptors, retry with backoff, AbortController |
+| `error-handling` | Error boundaries hierarchy, custom error classes, normalization |
+| `auth-patterns` | NextAuth/Auth.js, middleware protection, RBAC, token refresh |
+| `monorepo-patterns` | Turborepo/Nx pipelines, shared packages, changesets |
+| `i18n` | next-intl/react-intl, locale routing, RTL, ICU pluralization |
 
 ## Agents (8)
 
@@ -117,7 +130,7 @@ claude-workspace/
 | `test-writer` | Sonnet | After features or bug fixes (background) |
 | `orchestrator` | Opus | Full project health check on demand |
 
-## Commands (11)
+## Commands (12)
 
 | Command | What it does |
 |---------|-------|
@@ -132,6 +145,17 @@ claude-workspace/
 | `/e2e <flow>` | Generate Playwright E2E tests |
 | `/lighthouse [url]` | Run Lighthouse audit, parse scores, generate fix list |
 | `/perf-audit [focus]` | Bundle analysis, dep weight, images, fonts, third-party |
+| `/deploy` | Pre-deployment readiness checklist |
+
+## Rules (5)
+
+| Rule | Glob Pattern | What It Enforces |
+|------|-------------|------------------|
+| `typescript` | `*.ts`, `*.tsx` | Strict types, no `any`, interface conventions |
+| `styling` | `*.css`, `tailwind.config.*` | Design tokens, utility-first, responsive |
+| `testing` | `*.test.*`, `*.spec.*` | AAA pattern, factories, coverage thresholds |
+| `documentation` | `*.md`, `*.mdx` | Structure, frontmatter, linking |
+| `env-config` | `.env*`, `config.ts` | Zod validation, typed config, no hardcoded secrets |
 
 ## Hooks (10)
 
@@ -157,19 +181,19 @@ claude-workspace/
 
 - Add skills: `.claude/skills/<name>/SKILL.md`
 - Add agents: `.claude/agents/<name>.md`
-- Add rules: `.claude/rules/<name>.md` (with `paths:` frontmatter)
+- Add rules: `.claude/rules/<name>.md` (with `globs:` frontmatter)
 - Add commands: `.claude/commands/<name>.md`
 - Update `CLAUDE.md` Quick Facts for your stack
 
 ## Philosophy
 
-- **Lean CLAUDE.md** — under 60 lines; detail lives in skills and rules
+- **Lean CLAUDE.md** — under 65 lines; detail lives in skills and rules
 - **Progressive disclosure** — Claude loads only what the task needs
 - **Deterministic gates** — hooks enforce formatting and checks regardless of model
 - **Composable** — skills cross-reference, agents delegate, commands orchestrate
 
 ---
-<!-- Keywords: claude code configuration, anthropic claude workspace, claude system prompt, MCP tools, react typescript AI pair programming, claude agents, claude skills, frontend AI tooling, claude dotfiles -->
+<!-- Keywords: claude code configuration, anthropic claude workspace, claude system prompt, MCP tools, react typescript AI pair programming, claude agents, claude skills, frontend AI tooling, claude dotfiles, nextjs, tailwind -->
 
 ## License
 
